@@ -1,0 +1,1060 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>منصة عنوان | مساعد المعلم والمنصة الذكية للدروس والسناتر الكبرى</title>
+  
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  
+  <!-- Google Fonts: Tajawal -->
+  <link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800;900&display=swap" rel="stylesheet">
+  
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { tajawal: ['Tajawal', 'sans-serif'] },
+          colors: {
+            brand: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              500: '#06b6d4',
+              600: '#0284c7',
+              700: '#0369a1',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+
+  <style>
+    body { font-family: 'Tajawal', sans-serif; }
+    
+    @keyframes float {
+      0%, 100% { transform: translateY(0px) rotate(0deg); }
+      50% { transform: translateY(-12px) rotate(0.5deg); }
+    }
+    @keyframes pulseGlow {
+      0%, 100% { opacity: 0.25; filter: blur(30px); }
+      50% { opacity: 0.65; filter: blur(50px); }
+    }
+    @keyframes fadeInUp {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes neonPulse {
+      0%, 100% { box-shadow: 0 0 20px rgba(6, 182, 212, 0.3), inset 0 0 15px rgba(6, 182, 212, 0.1); }
+      50% { box-shadow: 0 0 40px rgba(6, 182, 212, 0.7), inset 0 0 25px rgba(6, 182, 212, 0.3); }
+    }
+    @keyframes rainbowBorder {
+      0% { border-color: #06b6d4; }
+      33% { border-color: #8b5cf6; }
+      66% { border-color: #10b981; }
+      100% { border-color: #06b6d4; }
+    }
+
+    .animate-float { animation: float 5s ease-in-out infinite; }
+    .animate-glow { animation: pulseGlow 7s ease-in-out infinite; }
+    .animate-fade-in { animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-neon { animation: neonPulse 3s ease-in-out infinite; }
+    .animate-rainbow { animation: rainbowBorder 6s linear infinite; }
+    
+    .glass-card {
+      background: rgba(15, 23, 42, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    .glass-nav {
+      background: rgba(2, 6, 23, 0.85);
+      backdrop-filter: blur(20px);
+      -webkit-backdrop-filter: blur(20px);
+    }
+  </style>
+</head>
+<body class="bg-slate-950 text-slate-100 min-h-screen antialiased selection:bg-cyan-500 selection:text-white">
+
+  <!-- Background Ambient Lights -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none z-0">
+    <div class="absolute -top-32 -right-32 w-[500px] h-[500px] bg-cyan-500/20 rounded-full animate-glow"></div>
+    <div class="absolute top-1/3 -left-32 w-[450px] h-[450px] bg-blue-600/15 rounded-full animate-glow" style="animation-delay: 2.5s;"></div>
+    <div class="absolute -bottom-32 right-1/4 w-[600px] h-[600px] bg-emerald-500/10 rounded-full animate-glow" style="animation-delay: 4s;"></div>
+  </div>
+
+  <!-- Global Custom Popup Modal System -->
+  <div id="globalModal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md hidden animate-fade-in">
+    <div class="glass-card max-w-md w-full rounded-3xl p-6 sm:p-8 border border-cyan-500/40 shadow-2xl space-y-5 text-right relative">
+      <button onclick="closeModal()" class="absolute top-5 left-5 text-slate-400 hover:text-white transition w-8 h-8 rounded-full bg-slate-900 flex items-center justify-center border border-slate-800">
+        <i class="fa-solid fa-xmark text-sm"></i>
+      </button>
+      <div id="modalIconContainer" class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-2xl shadow-inner">
+        <i id="modalIcon" class="fa-solid fa-circle-info"></i>
+      </div>
+      <div>
+        <h3 id="modalTitle" class="text-xl font-black text-white mb-2">عنوان الرسالة</h3>
+        <div id="modalBody" class="text-xs sm:text-sm text-slate-300 leading-relaxed space-y-2">
+          محتوى الرسالة يظهر هنا...
+        </div>
+      </div>
+      <div class="pt-2 flex justify-end gap-3">
+        <button onclick="closeModal()" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white font-bold text-xs shadow-lg shadow-cyan-600/20 transition w-full sm:w-auto">
+          حسناً، فهمت
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Header Navigation -->
+  <header class="sticky top-0 z-50 glass-nav border-b border-slate-800/80">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+      
+      <!-- Brand Logo -->
+      <a href="#" class="flex items-center gap-3 group">
+        <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-blue-600 via-cyan-500 to-teal-400 p-0.5 shadow-lg shadow-blue-500/25 group-hover:scale-105 transition-transform duration-300 flex items-center justify-center overflow-hidden bg-white">
+          <img src="https://i.postimg.cc/dVNy25xy/Chat-GPT-Image-Sep-16-2026-12-21-45-AM.png" alt="شعار عنوان" class="w-full h-full object-cover rounded-xl" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';" />
+          <div class="w-full h-full bg-blue-900 rounded-xl items-center justify-center text-white font-black text-xl hidden">ع</div>
+        </div>
+        <div class="flex flex-col">
+          <span class="text-2xl font-black tracking-tight text-white group-hover:text-cyan-400 transition-colors">
+            عـنـوان
+          </span>
+          <span class="text-[10px] text-cyan-400 font-bold tracking-widest uppercase">مساعدك الذكي في التعليم</span>
+        </div>
+      </a>
+
+      <!-- Navigation Links -->
+      <nav class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+        <a href="#features" class="hover:text-cyan-400 transition-colors">المميزات</a>
+        <a href="#simulator" class="hover:text-cyan-400 transition-colors text-cyan-400 font-bold animate-pulse">✨ جرب المنصة بنفسك</a>
+        <a href="#centers-pro" class="hover:text-cyan-400 transition-colors text-purple-400 font-bold">خاصية السناتر</a>
+        <a href="#pricing" class="hover:text-cyan-400 transition-colors">الأسعار</a>
+        <a href="#faq" class="hover:text-cyan-400 transition-colors">الأسئلة</a>
+      </nav>
+
+      <!-- Header Actions -->
+      <div class="flex items-center gap-3">
+        <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20منصة%20عنوان" 
+           target="_blank" 
+           class="flex items-center gap-2 px-6 py-2.5 rounded-xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-sm shadow-lg shadow-emerald-500/25 hover:shadow-emerald-500/40 hover:-translate-y-0.5 transition-all duration-300">
+          <i class="fa-brands fa-whatsapp text-lg"></i>
+          <span>اشترك الآن</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-20 text-center">
+    
+    <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-cyan-500/30 bg-cyan-500/10 text-cyan-300 text-xs sm:text-sm font-bold mb-8 animate-fade-in shadow-inner">
+      <span class="flex h-2 w-2 relative">
+        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75"></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-cyan-500"></span>
+      </span>
+      منصة عنوان الذكية لإدارة الدروس والسناتر التعليمية الكبرى
+    </div>
+    
+    <h1 class="text-4xl sm:text-6xl lg:text-7xl font-black text-white tracking-tight leading-[1.15] mb-6 max-w-5xl mx-auto animate-fade-in">
+      أدِر مجموعاتك وكروت السناتر بذكاء <br>
+      <span class="bg-clip-text text-transparent bg-gradient-to-r from-cyan-400 via-teal-300 to-blue-500">
+        مع تقارير أولياء الأمور المباشرة برقمك
+      </span>
+    </h1>
+
+    <p class="text-slate-400 text-base sm:text-xl leading-relaxed mb-10 max-w-3xl mx-auto font-normal">
+      تخلص من كراكيب الأوراق وسجلات الحضور اليدوية مع "عنوان". مسح سريع بالـ QR Code للسناتر متعددة المدرسين، إشعارات تلقائية لأولياء الأمور عبر رقم الواتساب الخاص بك، ومتابعة دقيقة لكل حصة.
+    </p>
+
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+      <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20منصة%20عنوان" 
+         target="_blank" 
+         class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-gradient-to-r from-emerald-500 via-teal-500 to-emerald-600 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-lg shadow-xl shadow-emerald-500/30 hover:shadow-emerald-500/50 hover:-translate-y-1 transition-all duration-300 flex items-center justify-center gap-3">
+        <i class="fa-brands fa-whatsapp text-2xl"></i>
+        <span>ابدأ الآن واشترك في منصة عنوان</span>
+      </a>
+
+      <a href="#simulator" class="w-full sm:w-auto px-8 py-4 rounded-2xl bg-slate-900 hover:bg-slate-800 text-slate-200 font-bold text-base border border-cyan-500/40 flex items-center justify-center gap-2 transition duration-300 shadow-lg shadow-cyan-500/10">
+        <i class="fa-solid fa-laptop-code text-cyan-400 text-xl animate-bounce"></i>
+        <span>جرب المنصة التفاعلية الحية</span>
+      </a>
+    </div>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 max-w-4xl mx-auto border-t border-slate-800/80 pt-10">
+      <div>
+        <h3 class="text-3xl font-black text-white mb-1">+50,000</h3>
+        <p class="text-xs text-slate-400">رسالة حضور مرسلة</p>
+      </div>
+      <div>
+        <h3 class="text-3xl font-black text-cyan-400 mb-1">99.9%</h3>
+        <p class="text-xs text-slate-400">دقة تقارير الحضور</p>
+      </div>
+      <div>
+        <h3 class="text-3xl font-black text-emerald-400 mb-1">0 ثانية</h3>
+        <p class="text-xs text-slate-400">زمن تأخير الإشعارات</p>
+      </div>
+      <div>
+        <h3 class="text-3xl font-black text-purple-400 mb-1">100%</h3>
+        <p class="text-xs text-slate-400">سرعة بوابات السناتر</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ======================================================= -->
+  <!-- FULL INTERACTIVE SANDBOX PLATFORM SIMULATOR (DASHBOARD) -->
+  <!-- ======================================================= -->
+  <section id="simulator" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center mb-12">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold mb-4 uppercase tracking-wider animate-pulse">
+        <i class="fa-solid fa-desktop"></i> منصة المحاكاة التفاعلية الحية
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">اختبر لوحة التحكم الحقيقية كأنك تمتلكها</h2>
+      <p class="text-slate-400 text-base sm:text-lg max-w-2xl mx-auto">
+        اختر الباقة لتجربة واجهة العمل الافتراضية للمدرس أو السنتر، أضف طالباً، جرب توليد كود الـ QR، أو افتح شاشة بوابة السنتر الذكية!
+      </p>
+
+      <!-- Tier Selection Tabs -->
+      <div class="flex flex-wrap justify-center gap-3 sm:gap-4 mt-8">
+        <button onclick="switchSandbox('basic')" id="sb-btn-basic" class="px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-slate-900 text-slate-300 border border-slate-800 hover:border-cyan-500/50 flex items-center gap-2">
+          <i class="fa-solid fa-seedling text-cyan-400"></i>
+          <span>1. باقة البداية الذكية (٢٩٩ جـ)</span>
+        </button>
+
+        <button onclick="switchSandbox('pro')" id="sb-btn-pro" class="px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-cyan-600 text-white shadow-lg shadow-cyan-600/30 border border-cyan-400 flex items-center gap-2 transform scale-105">
+          <i class="fa-solid fa-crown text-amber-300"></i>
+          <span>2. المعلم المحترف (٥٩٩ جـ)</span>
+        </button>
+
+        <button onclick="switchSandbox('centers')" id="sb-btn-centers" class="px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-slate-900 text-slate-300 border border-slate-800 hover:border-purple-500/50 flex items-center gap-2">
+          <i class="fa-solid fa-building-columns text-purple-400"></i>
+          <span>3. باقة السناتر والبوابات (١,٢٩٩ جـ)</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- The Full Platform Interface Mockup Container -->
+    <div id="sandbox-container" class="glass-card rounded-3xl border-2 border-cyan-500/40 shadow-2xl overflow-hidden animate-neon transition-all duration-500">
+      
+      <!-- Top Platform Bar (Window Controls & Teacher Info) -->
+      <div class="bg-slate-900/90 px-6 py-4 border-b border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="flex items-center gap-1.5">
+            <span class="w-3 h-3 rounded-full bg-rose-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-amber-500 inline-block"></span>
+            <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+          </div>
+          <span class="text-xs text-slate-400 font-mono border-r border-slate-700 pr-3 mr-2">Anwan OS v3.0 Sandbox</span>
+          <span id="sb-active-badge" class="px-3 py-1 rounded-full bg-cyan-500/10 text-cyan-400 text-xs font-bold border border-cyan-500/20">
+            أستاذ ديمو (الباقة الاحترافية)
+          </span>
+        </div>
+
+        <!-- Inner Platform Tabs (Sidebar simulation) -->
+        <div class="flex items-center gap-2 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0">
+          <button onclick="switchTab('dashboard')" id="tab-dashboard" class="px-4 py-2 rounded-xl text-xs font-bold bg-cyan-600 text-white transition flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-chart-pie"></i> لوحة التحكم
+          </button>
+          <button onclick="switchTab('students')" id="tab-students" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-user-plus"></i> إضافة الطلاب والـ QR
+          </button>
+          <button onclick="switchTab('scanner')" id="tab-scanner" class="px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5 whitespace-nowrap">
+            <i class="fa-solid fa-qrcode"></i> محاكاة البوابة وحضور الطلاب
+          </button>
+        </div>
+      </div>
+
+      <!-- PLATFORM CONTENT AREA -->
+      <div id="sandbox-content" class="p-6 sm:p-10 min-h-[480px]">
+        <!-- Default Tab: Dashboard Overview -->
+        <div id="view-dashboard" class="space-y-6 animate-fade-in">
+          
+          <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40 rounded-2xl p-5 border border-cyan-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+            <div class="space-y-1">
+              <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+                <i class="fa-solid fa-mobile-screen-button"></i>
+                <span>رقم الواتساب المعتمد لإرسال التقارير (إجباري):</span>
+              </div>
+              <p class="text-xs text-slate-400">الرقم الذي يتم ربط إشعارات الحضور والدرجات به لإرسالها لأولياء الأمور تلقائياً.</p>
+            </div>
+            <div class="flex items-center gap-2 w-full md:w-auto">
+              <input id="sandboxPhoneInput" type="text" value="01500994675" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500 w-full md:w-48 text-center font-bold" />
+              <button onclick="saveSandboxPhone()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-lg">
+                حفظ الرقم
+              </button>
+            </div>
+          </div>
+
+          <div id="sandbox-metrics" class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+              <i class="fa-solid fa-users text-cyan-400 text-xl mb-2"></i>
+              <p class="text-xs text-slate-400 mb-1">إجمالي الطلاب المسجلين</p>
+              <p class="text-2xl font-black text-white" id="stat-students-count">184 طالب</p>
+            </div>
+            <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+              <i class="fa-solid fa-user-check text-emerald-400 text-xl mb-2"></i>
+              <p class="text-xs text-slate-400 mb-1">نسبة حضور اليوم</p>
+              <p class="text-2xl font-black text-emerald-400">96.4%</p>
+            </div>
+            <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+              <i class="fa-brands fa-whatsapp text-teal-400 text-xl mb-2"></i>
+              <p class="text-xs text-slate-400 mb-1">تقارير الواتساب المرسلة</p>
+              <p class="text-2xl font-black text-teal-300">1,420</p>
+            </div>
+            <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+              <i class="fa-solid fa-clipboard-check text-purple-400 text-xl mb-2"></i>
+              <p class="text-xs text-slate-400 mb-1">المجموعات الدراسية</p>
+              <p class="text-2xl font-black text-purple-300" id="stat-groups-text">مفتوحة للكل</p>
+            </div>
+          </div>
+
+          <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div class="text-xs sm:text-sm text-slate-300">
+              <i class="fa-solid fa-circle-check text-emerald-400 ml-2"></i>
+              <span>المنصة جاهزة لاستقبال طلابك الجدد وإرسال الإشعارات. اختر علامة التبويب بالأعلى لتجربة إضافة طالب أو محاكاة البوابة!</span>
+            </div>
+            <button onclick="switchTab('students')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg transition whitespace-nowrap">
+              <i class="fa-solid fa-user-plus ml-1"></i> ابدأ إضافة طالب تجريبي
+            </button>
+          </div>
+
+        </div>
+      </div>
+
+      <div class="bg-slate-950 px-6 py-3 border-t border-slate-900 text-xs text-slate-500 flex items-center justify-between">
+        <span>منصة عنوان التعليمية — محاكاة تجريبية حية (Sandbox Mode)</span>
+        <span class="text-cyan-400 font-bold">جميع الحقوق محفوظة 2026 ©</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Special Centers Feature Section -->
+  <section id="centers-pro" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="glass-card rounded-3xl p-8 sm:p-12 border border-purple-500/30 relative overflow-hidden bg-gradient-to-br from-slate-900/90 via-slate-900/80 to-purple-950/30 shadow-2xl">
+      <div class="absolute -top-24 -left-24 w-72 h-72 bg-purple-500/15 rounded-full blur-3xl pointer-events-none"></div>
+      
+      <div class="max-w-3xl mb-12">
+        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full bg-purple-500/10 border border-purple-500/30 text-purple-300 text-xs font-bold mb-4">
+          <i class="fa-solid fa-star text-purple-400"></i>
+          حصرية للسناتر التعليمية متعددة المعلمين
+        </div>
+        <h2 class="text-3xl sm:text-5xl font-black text-white mb-4 leading-tight">
+          نظام الكارت الذكي للبوابات: <br>
+          <span class="bg-clip-text text-transparent bg-gradient-to-r from-purple-400 via-pink-300 to-cyan-400">
+            وداعاً لسؤال "رايح لمستر مين وبكام؟"
+          </span>
+        </h2>
+        <p class="text-slate-300 text-base sm:text-lg leading-relaxed">
+          في السناتر الكبيرة، الطالب بيشترك مع كذا مدرس وفي مواعيد مختلفة. مع ميزة "الكارت الذكي المتعدد" من منصة عنوان، الأسيستانت على البوابة بيمسح كارت الطالب والسيستم بيتولى الباقي أوتوماتيكياً!
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+          <div class="w-12 h-12 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-clock-rotate-left"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">التعرف التلقائي حسب الوقت</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">السيستم بيقرأ الساعة الحالية (مثلاً الساعة 9:30 والدرس يبدأ 10) ويحدد فوراً حصة المدرس المستهدفة دون أي تدخل بشري أو سؤال.</p>
+        </div>
+
+        <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+          <div class="w-12 h-12 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-file-invoice-dollar"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">عرض سعر الحصة والمصاريف</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">الأسيستانت بيظهر له فوراً على الشاشة اسم المستر، سعر الحصة، وهل الطالب سدد ولا مطلوب تحصيل المبلغ، أو يدخل ديركت حسب سياسة السنتر.</p>
+        </div>
+
+        <div class="bg-slate-950/60 p-6 rounded-2xl border border-slate-800">
+          <div class="w-12 h-12 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-xl mb-4">
+            <i class="fa-solid fa-calendar-days"></i>
+          </div>
+          <h3 class="text-lg font-bold text-white mb-2">إدارة الحصص المتعددة في اليوم</h3>
+          <p class="text-slate-400 text-xs leading-relaxed">لو الطالب عنده درس الساعة 10 ودرس تاني بعده الساعة 2، لما يرجع يدخل تاني، السيستم بيتعرف على الحصة التانية لوحدها بكل سهولة وبدون لخبطة.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Key Features Grid Section -->
+  <section id="features" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">كل ما يحتاجه المعلم والسنتر في منصة عنوان</h2>
+      <p class="text-slate-400 text-base sm:text-lg">صُممت المنصة خصيصاً لتناسب طبيعة عمل المعلم والسناتر التعليمية بكل كفاءة وبساطة.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-cyan-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-solid fa-qrcode"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">حضور سريع بالـ QR Code</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">اطبع كروت الطلاب بـ QR مخصص. بمجرد توجيه الموبايل أو قارئ البوابة، يتم تسجيل الحضور في جزء من الثانية بدون قوائم ورقية.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-emerald-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-brands fa-whatsapp"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">إشعارات الواتساب المباشرة</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">يرسل النظام رسالة تلقائية لولي الأمر فور تسجيل حضور الطالب، تتضمن الموعد وحالة الواجب والدرجات عبر رقم الواتساب المعتمد الخاص بك.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-blue-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-blue-500/10 border border-blue-500/20 text-blue-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-solid fa-clipboard-check"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">متابعة الواجبات والاختبارات</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">سجل درجات الشيتات والامتحانات الشاملة والواجبات اليومية بسهولة، مع رسم بياني يوضح مستوى كل طالب وتطوره الشهري.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-purple-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-solid fa-wallet"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">إدارة الحسابات والاشتراكات</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">متابعة دفع المصروفات الشهرية لكل طالب وتنبيه أولياء الأمور بالمتأخرات المالية تلقائياً دون إحراج.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-amber-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-solid fa-mobile-screen"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">واجهة Mobile-First خفيفة</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">مصممة خصيصاً للعمل بسلاسة متناهية على هواتف الأندرويد والآيفون وأجهزة البوابات بدون الحاجة لتعقيدات برمجية.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800/80 hover:border-rose-500/40 transition-all duration-300 hover:-translate-y-1">
+        <div class="w-14 h-14 rounded-2xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center text-2xl mb-6">
+          <i class="fa-solid fa-shield-halved"></i>
+        </div>
+        <h3 class="text-xl font-bold text-white mb-3">أمان كامل واستقرار محلي</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">تعتمد المنصة على تقنيات التخزين السحابي والمحلي والنسخ الاحتياطي المستمر لضمان عدم ضياع أي بيانات حضور.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section id="how-it-works" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">كيف تبدأ مع منصة عنوان؟</h2>
+      <p class="text-slate-400 text-base sm:text-lg">لا نحتاج لخطوات معقدة، يمكنك البدء في تنظيم مجموعاتك والسناتر خلال دقائق قليلة.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
+      <div class="glass-card p-8 rounded-3xl border border-slate-800 text-center relative">
+        <div class="w-12 h-12 rounded-full bg-cyan-500 text-slate-950 font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-cyan-500/30">1</div>
+        <h3 class="text-xl font-bold text-white mb-2">تأكيد رقمك عبر الواتساب</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">تواصل معنا عبر الواتساب لتفعيل حسابك وإضافة رقم الهاتف الذي ترغب في إرسال تقارير الطلاب من خلاله.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800 text-center relative">
+        <div class="w-12 h-12 rounded-full bg-teal-500 text-slate-950 font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-teal-500/30">2</div>
+        <h3 class="text-xl font-bold text-white mb-2">إضافة المدرسين والطلاب</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">سجل جدول المواعيد وأسعار الحصص لكل مدرس بالسنتر، وقم بطباعة كروت الـ QR المخصصة للطلاب.</p>
+      </div>
+
+      <div class="glass-card p-8 rounded-3xl border border-slate-800 text-center relative">
+        <div class="w-12 h-12 rounded-full bg-emerald-500 text-slate-950 font-black text-xl flex items-center justify-center mx-auto mb-6 shadow-lg shadow-emerald-500/30">3</div>
+        <h3 class="text-xl font-bold text-white mb-2">المسح الذكي والإرسال</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">بمجرد مسح الكارت على البوابة، يظهر للأسيستانت تفاصيل حصة المدرس في هذا التوقيت ويتم إرسال إشعار ولي الأمر فوراً.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Pricing & Subscription Plans Section -->
+  <section id="pricing" class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center max-w-3xl mx-auto mb-16">
+      <div class="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 text-xs font-bold mb-3 uppercase tracking-wider">
+        باقات الأسعار والاشتراكات
+      </div>
+      <h2 class="text-3xl sm:text-5xl font-black text-white mb-4">اختر الباقة المناسبة لطبيعة دروسك وسنتك</h2>
+      <p class="text-slate-400 text-base sm:text-lg">خطط أسعار واضحة وعادلة لكل المعلمين والسناتر، مع دعم فني مستمر وتفعيل فوري.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch">
+      
+      <!-- Tier 1: Basic -->
+      <div class="glass-card rounded-3xl p-8 border border-slate-800 flex flex-col justify-between hover:border-slate-700 transition">
+        <div>
+          <div class="text-cyan-400 font-bold text-sm mb-2">باقة المعلم الفرد</div>
+          <h3 class="text-2xl font-black text-white mb-4">البداية الذكية</h3>
+          <p class="text-slate-400 text-xs mb-6">مناسبة للمعلمين الذين يديرون عدداً محدوداً من المجموعات الدراسية.</p>
+          <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-800">
+            <span class="text-4xl font-black text-white">٢٩٩</span>
+            <span class="text-slate-400 text-sm">جنية / شهرياً</span>
+          </div>
+
+          <div class="mb-6 p-3.5 bg-slate-900/90 rounded-2xl border border-slate-800 text-slate-300 text-xs leading-relaxed">
+            <div class="flex items-center gap-2 text-cyan-400 font-bold mb-1">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>تنويه هام بشأن الكروت:</span>
+            </div>
+            السعر يشمل توليد أكواد الـ (QR Code) الرقمية فقط. لطباعة الكروت البلاستيكية الفاخرة تواصل معنا (الحد الأدنى للطلب 10 كروت).
+          </div>
+
+          <ul class="space-y-3 text-slate-300 text-sm mb-8">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> حتى 3 مجموعات دراسية</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> تسجيل حضور QR غير محدود</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> إشعارات الواتساب عبر رقمك</li>
+            <li class="flex items-center gap-2 text-slate-500"><i class="fa-solid fa-xmark text-slate-600"></i> نظام السناتر والبوابات المتقدمة</li>
+          </ul>
+        </div>
+        <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20الباقة%20الأساسية%20لمنصة%20عنوان" 
+           target="_blank" 
+           class="w-full py-3.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-white font-bold text-center text-sm transition">
+          اختر الباقة الأساسية
+        </a>
+      </div>
+
+      <!-- Tier 2: Pro (Highlighted) -->
+      <div class="glass-card rounded-3xl p-8 border-2 border-cyan-500 relative flex flex-col justify-between shadow-2xl shadow-cyan-500/10 bg-slate-900/90 transform md:-translate-y-2">
+        <div class="absolute -top-4 right-1/2 translate-x-1/2 bg-gradient-to-r from-cyan-500 to-blue-600 text-white text-[11px] font-black px-4 py-1.5 rounded-full uppercase tracking-wider shadow-lg">
+          الأكثر طلباً بين المعلمين
+        </div>
+        <div>
+          <div class="text-cyan-400 font-bold text-sm mb-2">الباقة الاحترافية</div>
+          <h3 class="text-2xl font-black text-white mb-4">المعلم المحترف</h3>
+          <p class="text-slate-400 text-xs mb-6">الحل المتكامل لإدارة كل مجموعاتك وربط أولياء الأمور بكفاءة قصوى.</p>
+          <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-800">
+            <span class="text-5xl font-black text-white">٥٩٩</span>
+            <span class="text-slate-400 text-sm">جنية / شهرياً</span>
+          </div>
+
+          <div class="mb-6 p-3.5 bg-slate-950/90 rounded-2xl border border-cyan-500/20 text-slate-300 text-xs leading-relaxed">
+            <div class="flex items-center gap-2 text-cyan-400 font-bold mb-1">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>تنويه هام بشأن الكروت:</span>
+            </div>
+            السعر يشمل توليد أكواد الـ (QR Code) الرقمية فقط. لطباعة الكروت البلاستيكية الفاخرة تواصل معنا (الحد الأدنى للطلب 10 كروت).
+          </div>
+
+          <ul class="space-y-3 text-slate-200 text-sm mb-8">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> مجموعات دراسية غير محدودة</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> عدد طلاب غير محدود بالمنصة</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> إرسال فوري للواتساب برقمك الخاص</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> متابعة الواجبات واختبارات الشيتات</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-cyan-400"></i> تقارير وتحليلات أداء الطلاب الشهرية</li>
+          </ul>
+        </div>
+        <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20الباقة%20الاحترافية%20لمنصة%20عنوان" 
+           target="_blank" 
+           class="w-full py-4 rounded-xl bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 text-white font-black text-center text-sm shadow-lg shadow-cyan-500/25 transition">
+          اشترك في الباقة الاحترافية الآن
+        </a>
+      </div>
+
+      <!-- Tier 3: Centers -->
+      <div class="glass-card rounded-3xl p-8 border-2 border-purple-500/80 flex flex-col justify-between hover:border-purple-400 transition bg-gradient-to-b from-purple-950/20 to-slate-900/60">
+        <div>
+          <div class="inline-block px-3 py-1 rounded-full bg-purple-500/20 text-purple-300 text-[10px] font-bold mb-2">مميزة بسعر خاص للمراكز</div>
+          <h3 class="text-2xl font-black text-white mb-4">باقة السناتر والبوابات الذكية</h3>
+          <p class="text-slate-400 text-xs mb-6">مخصصة للسناتر الكبيرة التي تضم عدة معلمين وتدير الكروت والأسعار بذكاء.</p>
+          <div class="flex items-baseline gap-1 mb-6 pb-6 border-b border-slate-800">
+            <span class="text-4xl font-black text-purple-400">١,٢٩٩</span>
+            <span class="text-slate-400 text-sm">جنية / شهرياً</span>
+          </div>
+
+          <div class="mb-6 p-3.5 bg-slate-900/90 rounded-2xl border border-purple-500/30 text-slate-300 text-xs leading-relaxed">
+            <div class="flex items-center gap-2 text-purple-400 font-bold mb-1">
+              <i class="fa-solid fa-circle-info"></i>
+              <span>تنويه هام بشأن الكروت:</span>
+            </div>
+            السعر يشمل توليد أكواد الـ (QR Code) الرقمية فقط. لطباعة كروت البوابات للسنتر تواصل معنا (حد أدنى 10 كروت للطلب).
+          </div>
+
+          <ul class="space-y-3 text-slate-300 text-sm mb-8">
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> <strong>خاصية الكارت الذكي للبوابات</strong></li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> إدارة عدة معلمين وقاعات مختلفة</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> تحديد أسعار الحصص أوتوماتيكياً</li>
+            <li class="flex items-center gap-2"><i class="fa-solid fa-check text-purple-400"></i> دعم فني مخصص VIP 24/7</li>
+          </ul>
+        </div>
+        <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20باقة%20السناتر%20والبوابات%20الذكية%20لمنصة%20عنوان" 
+           target="_blank" 
+           class="w-full py-3.5 rounded-xl bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-500 hover:to-indigo-500 text-white font-bold text-center text-sm shadow-lg shadow-purple-600/20 transition">
+          اشترك في باقة السناتر الكبرى
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Comparison Section -->
+  <section id="comparison" class="relative z-10 max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center mb-12">
+      <h2 class="text-3xl sm:text-4xl font-black text-white mb-3">الفرق بين الطريقة التقليدية و"منصة عنوان"</h2>
+      <p class="text-slate-400 text-sm">قارن بنفسك واستشف كم الوقت والمجهود المهدور في إدارة الحضور وبوابات السناتر يدوياً</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+      <div class="bg-rose-950/20 border border-rose-900/40 rounded-3xl p-8">
+        <div class="flex items-center gap-3 text-rose-400 font-bold text-xl mb-6">
+          <i class="fa-solid fa-xmark-circle text-2xl"></i>
+          <span>الطريقة التقليدية القديمة</span>
+        </div>
+        <ul class="space-y-4 text-slate-300 text-sm">
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-minus text-rose-500 mt-1"></i>
+            <span>حيرة الأسيستانت على البوابة في معرفة المدرس وسعر الحصة.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-minus text-rose-500 mt-1"></i>
+            <span>تأخير وتكدس الطلاب عطلة على أبواب السناتر.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-minus text-rose-500 mt-1"></i>
+            <span>إرسال الرسائل يدوياً لأولياء الأمور بالواحد بعد الحصة.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-minus text-rose-500 mt-1"></i>
+            <span>كثرة الأخطاء في حسابات المصروفات وتكلفة الحصص.</span>
+          </li>
+        </ul>
+      </div>
+
+      <div class="bg-emerald-950/20 border border-emerald-500/30 rounded-3xl p-8 relative overflow-hidden">
+        <div class="flex items-center gap-3 text-emerald-400 font-bold text-xl mb-6">
+          <i class="fa-solid fa-check-circle text-2xl"></i>
+          <span>مع منصة عنوان الذكية</span>
+        </div>
+        <ul class="space-y-4 text-slate-200 text-sm">
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+            <span>تعرف فوري بالوقت على حصة المدرس وسعرها عند مسح الكارت.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+            <span>دخول سلس وسريع بدون أي طوابير أو أسئلة على البوابة.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+            <span>إشعارات واتساب فورية تصل لولي الأمر أثناء وجود الطالب بالحصة.</span>
+          </li>
+          <li class="flex items-start gap-3">
+            <i class="fa-solid fa-check text-emerald-400 mt-1"></i>
+            <span>تنظيم احترافي يرفع اسم السنتر ويجذب كبار المدرسين.</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ Section -->
+  <section id="faq" class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 border-t border-slate-900">
+    <div class="text-center mb-16">
+      <h2 class="text-3xl sm:text-4xl font-black text-white mb-3">الأسئلة الشائعة</h2>
+      <p class="text-slate-400 text-sm">إجابات عن معظم الاستفسارات التي تهمك حول المنصة والسناتر</p>
+    </div>
+
+    <div class="space-y-4">
+      <div class="glass-card rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-bold text-white mb-2">كيف يتعرف السيستم على المدرس المناسب للطالب عند البوابة؟</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">بناءً على جدول الحصص المسجل للكارت ومقارنته بالساعة الحالية وقت مسح الـ QR، يعرض السيستم للاستوديو فوراً بيانات الدرس واسم المدرس وسعر الحصة.</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-bold text-white mb-2">هل يحتاج ولي الأمر إلى تحميل أي تطبيق على هاتفه؟</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">لا نهائياً، تصل التقارير وإشعارات الحضور والدرجات لولي الأمر كرسالة واتساب عادية جداً على حسابه الحالي.</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-bold text-white mb-2">كيف يتم طلب الكروت المطبوعة للطلاب؟</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">بعد الاشتراك وتوليد الأكواد، يمكنك التواصل معنا لتصميم وطاعة الكروت البلاستيكية بكميات (بحد أدنى 10 كروت) لتصلك جاهزة ومصممة بهوية السنتر أو المدرس.</p>
+      </div>
+
+      <div class="glass-card rounded-2xl p-6 border border-slate-800">
+        <h3 class="text-lg font-bold text-white mb-2">كيف يمكن للسناتر الاشتراك وتفعيل البوابة؟</h3>
+        <p class="text-slate-400 text-sm leading-relaxed">اضغط على زر "اشترك الآن" وسيتم توجيهك مباشرة لمحادثتنا عبر الواتساب، وسيقوم فريق الدعم بتفعيل نظام السناتر وإعداد الجداول لك فوراً.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Bottom CTA Banner Section -->
+  <section class="relative z-10 max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="bg-gradient-to-r from-purple-950 via-slate-900 to-cyan-950 rounded-3xl p-8 sm:p-14 border border-purple-500/30 text-center relative overflow-hidden shadow-2xl">
+      <div class="relative z-10 max-w-3xl mx-auto">
+        <h2 class="text-3xl sm:text-5xl font-black text-white mb-6 leading-tight">
+          جاهز لتطوير بوابة سنتربك والقضاء على زحمة الحضور؟
+        </h2>
+        <p class="text-slate-300 text-base sm:text-lg mb-8">
+          انضم الآن إلى منصة عنوان وابدأ في إدارة كروت السناتر والمدرسين باحترافية كاملة.
+        </p>
+        
+        <a href="https://wa.me/201500994675?text=أهلاً،%20أريد%20الاشتراك%20في%20منصة%20عنوان" 
+           target="_blank" 
+           class="inline-flex items-center gap-3 px-10 py-5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-400 hover:to-teal-400 text-white font-black text-xl shadow-2xl shadow-emerald-500/40 hover:-translate-y-1 transition-all duration-300">
+          <i class="fa-brands fa-whatsapp text-2xl"></i>
+          <span>تواصل واشترك الآن</span>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="relative z-10 border-t border-slate-900 bg-slate-950 py-10 text-center text-xs text-slate-500">
+    <div class="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div class="flex items-center gap-2">
+        <span class="font-bold text-cyan-400">منصة عنوان</span>
+        <span>© 2026 جميع الحقوق محفوظة</span>
+      </div>
+      <div class="flex items-center gap-6">
+        <a href="https://wa.me/201500994675" target="_blank" class="hover:text-cyan-400 transition">الدعم الفني والواتساب</a>
+        <a href="#pricing" class="hover:text-cyan-400 transition">الأسعار</a>
+        <a href="#simulator" class="hover:text-cyan-400 transition">تجربة المنصة</a>
+        <a href="#faq" class="hover:text-cyan-400 transition">الأسئلة الشائعة</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- JavaScript Sandbox & Gorgeous Modal Engine -->
+  <script>
+    let currentTier = 'pro';
+    let mockStudents = [
+      { name: 'أحمد محمد إبراهيم', phone: '01012345678', group: 'المجموعة الأولى (السنتر)', code: 'ANW-9012' },
+      { name: 'يوسف محمود علي', phone: '01198765432', group: 'المجموعة الثانية (السنتر)', code: 'ANW-9013' }
+    ];
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const savedPhone = localStorage.getItem('teacher_whatsapp_number');
+      const phoneInput = document.getElementById('sandboxPhoneInput');
+      if (savedPhone && phoneInput) {
+        phoneInput.value = savedPhone;
+      }
+      renderSandboxContent('dashboard');
+    });
+
+    // Custom Gorgeous Modal System
+    function showModal(title, htmlContent, iconClass = 'fa-solid fa-circle-info', iconBgColor = 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30') {
+      const modal = document.getElementById('globalModal');
+      const titleEl = document.getElementById('modalTitle');
+      const bodyEl = document.getElementById('modalBody');
+      const iconEl = document.getElementById('modalIcon');
+      const iconCont = document.getElementById('modalIconContainer');
+
+      titleEl.innerText = title;
+      bodyEl.innerHTML = htmlContent;
+      iconEl.className = iconClass;
+      iconCont.className = `w-14 h-14 rounded-2xl border flex items-center justify-center text-2xl shadow-inner ${iconBgColor}`;
+
+      modal.classList.remove('hidden');
+    }
+
+    function closeModal() {
+      const modal = document.getElementById('globalModal');
+      modal.classList.add('hidden');
+    }
+
+    function saveSandboxPhone() {
+      const phoneInput = document.getElementById('sandboxPhoneInput');
+      if (!phoneInput) return;
+      const phoneVal = phoneInput.value.trim();
+
+      if (!phoneVal) {
+        showModal('تنبيه هام', '⚠️ رقم الهاتف إجباري لتشغيل إشعارات النظام وربط الواتساب!', 'fa-solid fa-triangle-exclamation', 'text-amber-400 bg-amber-500/10 border-amber-500/30');
+        phoneInput.focus();
+        return;
+      }
+
+      localStorage.setItem('teacher_whatsapp_number', phoneVal);
+      showModal('تم الحفظ بنجاح', `✅ تم حفظ رقم المرسل المعتمد بنجاح:<br><span class="text-cyan-300 font-mono font-bold text-base">${phoneVal}</span><br>سيتم إرسال تقارير الحضور لأولياء الأمور مباشرة من هذا الرقم.`, 'fa-solid fa-circle-check', 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30');
+    }
+
+    // Switch Sandbox Tiers (Basic, Pro, Centers)
+    function switchSandbox(tier) {
+      currentTier = tier;
+      const btnBasic = document.getElementById('sb-btn-basic');
+      const btnPro = document.getElementById('sb-btn-pro');
+      const btnCenters = document.getElementById('sb-btn-centers');
+      const activeBadge = document.getElementById('sb-active-badge');
+      const container = document.getElementById('sandbox-container');
+
+      [btnBasic, btnPro, btnCenters].forEach(b => {
+        b.className = "px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-slate-900 text-slate-300 border border-slate-800 hover:border-cyan-500/50 flex items-center gap-2";
+      });
+
+      if (tier === 'basic') {
+        btnBasic.className = "px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-cyan-600 text-white shadow-lg shadow-cyan-600/30 border border-cyan-400 flex items-center gap-2 transform scale-105";
+        activeBadge.innerText = "أستاذ ديمو (باقة البداية الذكية)";
+        container.className = "glass-card rounded-3xl border-2 border-cyan-500/40 shadow-2xl overflow-hidden animate-neon transition-all duration-500";
+      } else if (tier === 'pro') {
+        btnPro.className = "px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-cyan-600 text-white shadow-lg shadow-cyan-600/30 border border-cyan-400 flex items-center gap-2 transform scale-105";
+        activeBadge.innerText = "أستاذ ديمو (الباقة الاحترافية)";
+        container.className = "glass-card rounded-3xl border-2 border-cyan-400 shadow-2xl overflow-hidden animate-neon transition-all duration-500";
+      } else if (tier === 'centers') {
+        btnCenters.className = "px-6 py-3.5 rounded-2xl font-bold text-sm transition-all duration-300 bg-purple-600 text-white shadow-lg shadow-purple-600/30 border border-purple-400 flex items-center gap-2 transform scale-105";
+        activeBadge.innerText = "إدارة سنتر ديمو (باقة السناتر الكبرى)";
+        container.className = "glass-card rounded-3xl border-2 border-purple-500 shadow-2xl overflow-hidden animate-rainbow transition-all duration-500";
+      }
+
+      const activeTab = document.querySelector('#sandbox-content').dataset.activeTab || 'dashboard';
+      renderSandboxContent(activeTab);
+    }
+
+    // Switch Platform Inner Tabs
+    function switchTab(tabName) {
+      document.querySelector('#sandbox-content').dataset.activeTab = tabName;
+      ['dashboard', 'students', 'scanner'].forEach(t => {
+        const btn = document.getElementById(`tab-${t}`);
+        if (t === tabName) {
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-cyan-600 text-white transition flex items-center gap-1.5 whitespace-nowrap shadow-md";
+        } else {
+          btn.className = "px-4 py-2 rounded-xl text-xs font-bold bg-slate-800 hover:bg-slate-700 text-slate-300 transition flex items-center gap-1.5 whitespace-nowrap";
+        }
+      });
+      renderSandboxContent(tabName);
+    }
+
+    // Render Dynamic Tab HTML inside Sandbox Platform
+    function renderSandboxContent(tab) {
+      const content = document.getElementById('sandbox-content');
+
+      if (tab === 'dashboard') {
+        let groupsText = currentTier === 'basic' ? '3 مجموعات فقط' : (currentTier === 'pro' ? 'مجموعات غير محدودة' : 'سنتر متعدد المعلمين');
+        let extraCard = '';
+        if (currentTier === 'centers') {
+          extraCard = `
+            <div class="bg-purple-950/30 p-5 rounded-2xl border border-purple-500/30">
+              <div class="flex items-center gap-3 text-purple-300 font-bold mb-2">
+                <i class="fa-solid fa-building-columns text-xl"></i>
+                <span>حالة بوابات السناتر الذكية:</span>
+              </div>
+              <p class="text-xs text-slate-300 leading-relaxed">السيستم يعمل في وضع التعرف التلقائي بالساعة (Smart Time-Gate). الأسيستانت على البوابة يرى حصة المدرس وسعرها فور مسح كارت الطالب.</p>
+            </div>
+          `;
+        }
+
+        content.innerHTML = `
+          <div id="view-dashboard" class="space-y-6 animate-fade-in">
+            <div class="bg-gradient-to-r from-slate-900 via-slate-900 to-cyan-950/40 rounded-2xl p-5 border border-cyan-500/30 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+              <div class="space-y-1">
+                <div class="flex items-center gap-2 text-cyan-400 font-bold text-sm">
+                  <i class="fa-solid fa-mobile-screen-button"></i>
+                  <span>رقم الواتساب المعتمد لإرسال التقارير (إجباري):</span>
+                </div>
+                <p class="text-xs text-slate-400">الرقم الذي يتم ربط إشعارات الحضور والدرجات به لإرسالها لأولياء الأمور تلقائياً.</p>
+              </div>
+              <div class="flex items-center gap-2 w-full md:w-auto">
+                <input id="sandboxPhoneInput" type="text" value="${localStorage.getItem('teacher_whatsapp_number') || '01500994675'}" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-cyan-300 font-mono focus:outline-none focus:border-cyan-500 w-full md:w-48 text-center font-bold" />
+                <button onclick="saveSandboxPhone()" class="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold px-5 py-2.5 rounded-xl transition shadow-lg">
+                  حفظ الرقم
+                </button>
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+                <i class="fa-solid fa-users text-cyan-400 text-xl mb-2"></i>
+                <p class="text-xs text-slate-400 mb-1">الطلاب المسجلين بالديمو</p>
+                <p class="text-2xl font-black text-white">${mockStudents.length} طلاب</p>
+              </div>
+              <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+                <i class="fa-solid fa-user-check text-emerald-400 text-xl mb-2"></i>
+                <p class="text-xs text-slate-400 mb-1">نسبة الحضور</p>
+                <p class="text-2xl font-black text-emerald-400">100%</p>
+              </div>
+              <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+                <i class="fa-brands fa-whatsapp text-teal-400 text-xl mb-2"></i>
+                <p class="text-xs text-slate-400 mb-1">حالة الواتساب</p>
+                <p class="text-2xl font-black text-teal-300">متصل وجاهز</p>
+              </div>
+              <div class="bg-slate-900/60 p-5 rounded-2xl border border-slate-800 text-center">
+                <i class="fa-solid fa-clipboard-check text-purple-400 text-xl mb-2"></i>
+                <p class="text-xs text-slate-400 mb-1">نوع الباقة النشطة</p>
+                <p class="text-xs font-bold text-purple-300 mt-2">${groupsText}</p>
+              </div>
+            </div>
+
+            ${extraCard}
+
+            <div class="p-5 bg-slate-900/50 rounded-2xl border border-slate-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+              <div class="text-xs sm:text-sm text-slate-300">
+                <i class="fa-solid fa-wand-magic-sparkles text-cyan-400 ml-2"></i>
+                <span>انتقل إلى قسم <strong>"إضافة الطلاب والـ QR"</strong> لتجربة إضافة طالب جديد ورؤية الكود الفوري الخاص به!</span>
+              </div>
+              <button onclick="switchTab('students')" class="px-6 py-3 rounded-xl bg-gradient-to-r from-cyan-600 to-blue-600 hover:from-cyan-500 hover:to-blue-500 text-white text-xs font-bold shadow-lg transition whitespace-nowrap">
+                جرب إضافة طالب الآن
+              </button>
+            </div>
+          </div>
+        `;
+
+      } else if (tab === 'students') {
+        let studentsRows = mockStudents.map((s, idx) => `
+          <tr class="border-b border-slate-800/80 hover:bg-slate-900/50 transition">
+            <td class="py-3 px-4 font-bold text-white">${s.name}</td>
+            <td class="py-3 px-4 font-mono text-cyan-300">${s.phone}</td>
+            <td class="py-3 px-4 text-slate-300 text-xs">${s.group}</td>
+            <td class="py-3 px-4 font-mono text-emerald-400 text-xs">${s.code}</td>
+            <td class="py-3 px-4 text-center">
+              <button onclick="previewStudentCard('${s.name}', '${s.code}', '${s.group}')" class="px-3 py-1.5 rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 text-xs font-bold border border-cyan-500/30 transition">
+                <i class="fa-solid fa-qrcode"></i> عرض الكارت
+              </button>
+            </td>
+          </tr>
+        `).join('');
+
+        content.innerHTML = `
+          <div id="view-students" class="space-y-6 animate-fade-in">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+              <div>
+                <h3 class="text-lg font-bold text-white mb-1">قائمة الطلاب وتوليد أكواد الـ QR</h3>
+                <p class="text-xs text-slate-400">أضف طلابك الجدد وشاهد كيف يتم إنشاء كروت الـ QR الخاصة بهم أوتوماتيكياً.</p>
+              </div>
+              <button onclick="openAddStudentModal()" class="px-5 py-2.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition flex items-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> إضافة طالب جديد
+              </button>
+            </div>
+
+            <div class="overflow-x-auto rounded-2xl border border-slate-800 bg-slate-900/40">
+              <table class="w-full text-right text-sm text-slate-300">
+                <thead class="bg-slate-900 text-xs uppercase text-slate-400 border-b border-slate-800">
+                  <tr>
+                    <th class="py-3.5 px-4">اسم الطالب</th>
+                    <th class="py-3.5 px-4">رقم ولي الأمر (واتساب)</th>
+                    <th class="py-3.5 px-4">المجموعة الدراسية</th>
+                    <th class="py-3.5 px-4">كود الـ QR الرقمي</th>
+                    <th class="py-3.5 px-4 text-center">إجراءات الكارت</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  ${studentsRows}
+                </tbody>
+              </table>
+            </div>
+
+            <div id="addStudentBox" class="hidden p-5 rounded-2xl bg-slate-900 border border-cyan-500/40 space-y-4 animate-fade-in">
+              <h4 class="text-sm font-bold text-cyan-400 flex items-center gap-2">
+                <i class="fa-solid fa-user-plus"></i> تسجيل طالب جديد في النظام التجريبي:
+              </h4>
+              <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                <input id="newStudentName" type="text" placeholder="اسم الطالب الثلاثي" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500" />
+                <input id="newStudentPhone" type="text" placeholder="رقم ولي الأمر (010...)" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500" />
+                <input id="newStudentGroup" type="text" placeholder="المجموعة أو المدرس" class="bg-slate-950 border border-slate-700 rounded-xl px-4 py-2.5 text-xs text-white focus:outline-none focus:border-cyan-500" />
+              </div>
+              <div class="flex justify-end gap-2">
+                <button onclick="document.getElementById('addStudentBox').classList.add('hidden')" class="px-4 py-2 rounded-xl bg-slate-800 text-slate-300 text-xs font-bold">إلغاء</button>
+                <button onclick="addNewStudent()" class="px-5 py-2 rounded-xl bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold shadow">حفظ وتوليد الـ QR</button>
+              </div>
+            </div>
+          </div>
+        `;
+
+      } else if (tab === 'scanner') {
+        let scannerTitle = currentTier === 'centers' ? 'محاكاة بوابة السنتر الذكية (Smart Gate Scanner)' : 'محاكاة مسح كارت الطالب وإرسال الواتساب';
+        let scannerDesc = currentTier === 'centers' 
+          ? 'في هذا الوضع، يقوم الأسيستانت بمسح كارت الطالب على بوابة السنتر، والسيستم يحدد فوراً الحصة الحالية وسعرها!'
+          : 'جرب توجيه القارئ أو محاكاة مسح كارت الطالب لتشغيل إشعارات الواتساب الفورية لولي الأمر.';
+
+        content.innerHTML = `
+          <div id="view-scanner" class="space-y-6 text-center py-8 animate-fade-in">
+            <div class="max-w-xl mx-auto space-y-3">
+              <div class="w-16 h-16 rounded-3xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400 flex items-center justify-center text-2xl mx-auto mb-4 animate-bounce">
+                <i class="fa-solid fa-qrcode"></i>
+              </div>
+              <h3 class="text-xl sm:text-2xl font-bold text-white">${scannerTitle}</h3>
+              <p class="text-xs sm:text-sm text-slate-400">${scannerDesc}</p>
+            </div>
+
+            <div class="max-w-md mx-auto p-6 rounded-3xl bg-slate-900/80 border border-slate-800 space-y-4 shadow-xl">
+              <div class="p-4 rounded-2xl bg-slate-950 border border-slate-800 font-mono text-cyan-300 text-xs">
+                جاهز للمسح... [ضع كارت الطالب أمام الماسح الضوئي]
+              </div>
+              <button onclick="triggerSandboxScan()" class="w-full py-4 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-sm shadow-xl shadow-emerald-500/20 transition flex items-center justify-center gap-2">
+                <i class="fa-solid fa-camera text-lg"></i>
+                <span>اضغط هنا لمحاكاة مسح كارت طالب الآن</span>
+              </button>
+            </div>
+          </div>
+        `;
+      }
+    }
+
+    function previewStudentCard(name, code, group) {
+      const cardHtml = `
+        <div class="p-5 rounded-2xl bg-gradient-to-br from-slate-900 via-slate-950 to-cyan-950 border border-cyan-500/40 text-center space-y-3 shadow-inner">
+          <div class="text-[11px] font-bold text-cyan-400 uppercase tracking-widest">منصة عنوان التعليمية — بطاقة طالب</div>
+          <div class="w-24 h-24 bg-white p-2 rounded-2xl mx-auto flex items-center justify-center shadow-lg">
+            <i class="fa-solid fa-qrcode text-6xl text-slate-950"></i>
+          </div>
+          <h4 class="text-base font-black text-white">${name}</h4>
+          <p class="text-xs text-slate-400">المجموعة: <span class="text-cyan-300 font-bold">${group}</span></p>
+          <div class="inline-block px-4 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-500/30 text-emerald-400 font-mono font-bold text-xs">
+            ${code}
+          </div>
+        </div>
+      `;
+      showModal('معاينة كارت الطالب الذكي (QR Code)', cardHtml, 'fa-solid fa-id-card', 'text-cyan-400 bg-cyan-500/10 border-cyan-500/30');
+    }
+
+    function openAddStudentModal() {
+      document.getElementById('addStudentBox').classList.remove('hidden');
+    }
+
+    function addNewStudent() {
+      const name = document.getElementById('newStudentName').value.trim();
+      const phone = document.getElementById('newStudentPhone').value.trim();
+      const group = document.getElementById('newStudentGroup').value.trim();
+
+      if (!name || !phone) {
+        showModal('بيانات غير مكتملة', '⚠️ يرجى إدخال اسم الطالب الثلاثي ورقم ولي الأمر (واتساب) بشكل صحيح!', 'fa-solid fa-triangle-exclamation', 'text-amber-400 bg-amber-500/10 border-amber-500/30');
+        return;
+      }
+
+      const randomCode = 'ANW-' + Math.floor(1000 + Math.random() * 9000);
+      mockStudents.push({ name, phone, group: group || 'المجموعة الأساسية', code: randomCode });
+      
+      document.getElementById('addStudentBox').classList.add('hidden');
+      showModal('تمت الإضافة بنجاح', `✅ تمت إضافة الطالب <strong class="text-white">${name}</strong> بنجاح وتم توليد كود الـ QR الخاص به:<br><span class="text-emerald-400 font-mono font-bold text-sm">${randomCode}</span>`, 'fa-solid fa-user-check', 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30');
+      switchTab('students');
+    }
+
+    function triggerSandboxScan() {
+      const savedPhone = localStorage.getItem('teacher_whatsapp_number') || document.getElementById('sandboxPhoneInput')?.value || '01500994675';
+      let msg = '';
+      if (currentTier === 'centers') {
+        msg = `
+          <div class="space-y-2 text-right">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <span class="text-cyan-400 font-bold">وقت المسح:</span> الساعة 9:45 صباحاً
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <span class="text-purple-400 font-bold">الحصة المستهدفة:</span> مستر أحمد (ساينس) — الساعة 10:00 ص
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <span class="text-amber-400 font-bold">مصاريف الحصة:</span> 70 جـ (تم التحصيل)
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300 font-semibold">
+              <i class="fa-brands fa-whatsapp text-sm ml-1"></i> تم إرسال إشعار ولي الأمر الفوري عبر رقمك المعتمد (${savedPhone}) بنجاح!
+            </div>
+          </div>
+        `;
+        showModal('تقرير محاكاة بوابة السنتر الذكية', msg, 'fa-solid fa-qrcode', 'text-purple-400 bg-purple-500/10 border-purple-500/30');
+      } else {
+        msg = `
+          <div class="space-y-2 text-right">
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <span class="text-cyan-400 font-bold">اسم الطالب:</span> ${mockStudents[0].name}
+            </div>
+            <div class="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300">
+              <span class="text-emerald-400 font-bold">حالة الحضور:</span> تم تسجيل الحضور في الموعد المحدد بنجاح
+            </div>
+            <div class="p-3 rounded-xl bg-emerald-950/40 border border-emerald-500/30 text-xs text-emerald-300 font-semibold">
+              <i class="fa-brands fa-whatsapp text-sm ml-1"></i> تم إرسال إشعار ولي الأمر الفوري عبر رقمك (${savedPhone}) بنجاح!
+            </div>
+          </div>
+        `;
+        showModal('تقرير تسجيل الحضور الفوري', msg, 'fa-solid fa-circle-check', 'text-emerald-400 bg-emerald-500/10 border-emerald-500/30');
+      }
+    }
+  </script>
+</body>
+</html>

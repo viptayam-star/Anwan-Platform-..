@@ -1,0 +1,49 @@
+// استرجاع رقم الواتساب المحفوظ فور تحميل الصفحة
+document.addEventListener('DOMContentLoaded', () => {
+  const savedPhone = localStorage.getItem('teacher_whatsapp_number');
+  const phoneInput = document.getElementById('teacherPhone');
+  if (savedPhone && phoneInput) {
+    phoneInput.value = savedPhone;
+  }
+});
+
+// حفظ رقم المعلم في التخزين المحلي
+function saveTeacherPhone() {
+  const phoneInput = document.getElementById('teacherPhone');
+  if (!phoneInput) return;
+  const phoneVal = phoneInput.value.trim();
+
+  if (!phoneVal) {
+    showToast('⚠️ رقم الهاتف إجباري لتشغيل إشعارات النظام!', 'error');
+    phoneInput.focus();
+    return;
+  }
+
+  localStorage.setItem('teacher_whatsapp_number', phoneVal);
+  showToast(`✅ تم حفظ رقم المرسل المعتمد (${phoneVal}) بنجاح!`, 'success');
+}
+
+// محاكاة عملية مسح الـ QR للطلاب
+function triggerMockScan() {
+  const savedPhone = localStorage.getItem('teacher_whatsapp_number') || document.getElementById('teacherPhone')?.value || '01500994675';
+  showToast(`📸 تم تسجيل حضور الطالب "أحمد محمد" — وجاري إرسال الإشعار لولي الأمر عبر رقمك (${savedPhone})...`, 'success');
+}
+
+// إظهار تنبيهات الشاشة الاحترافية بدلاً من alert المتصفح المزعجة
+function showToast(message, type = 'success') {
+  const toast = document.getElementById('statusToast');
+  if (!toast) return;
+
+  toast.innerText = message;
+  toast.classList.remove('hidden');
+
+  if (type === 'error') {
+    toast.className = 'p-4 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs sm:text-sm text-center font-semibold animate-fade-in shadow-lg';
+  } else {
+    toast.className = 'p-4 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs sm:text-sm text-center font-semibold animate-fade-in shadow-lg';
+  }
+
+  setTimeout(() => {
+    toast.classList.add('hidden');
+  }, 5000);
+}
